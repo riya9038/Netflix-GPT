@@ -1,7 +1,15 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Header from "./Header";
 import { Box, TextField, Typography } from "@mui/material";
-import { checkValidation } from "./utils/validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "./utils/firebase";
+import { checkValidation } from "./utils/validation";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "./store/userSlice";
 
 function Login() {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -9,6 +17,8 @@ function Login() {
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const toggleSignIn = () => {
     setIsSignIn(!isSignIn);
@@ -16,11 +26,48 @@ function Login() {
 
   const handleSubmit = () => {
     const message = checkValidation(
-      name.current.value,
-      email.current.value,
-      password.current.value
+      name?.current?.value,
+      email?.current?.value,
+      password?.current?.value
     );
     setErrorMessage(message);
+
+    if (message) return;
+
+    if (!isSignIn) {
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          dispatch(addUser(user.uid, user.email));
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    } else {
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          dispatch(addUser(user.uid, user.email));
+          navigate("/browse");
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    }
   };
   return (
     <>
@@ -35,6 +82,7 @@ function Login() {
         />
       </Box>
       <Box
+        onSubmit={(e) => e.preventDefault()}
         component={"form"}
         className="w-3/12 absolute mx-auto left-0 right-0 top-32 bg-black opacity-90 flex flex-col p-10 gap-5 rounded-lg text-white"
       >
@@ -46,7 +94,7 @@ function Login() {
             className="text-white bg-slate-600"
             name="name"
             type="text"
-            ref={name}
+            inputRef={name}
             placeholder="Enter full name"
           />
         )}
@@ -54,14 +102,14 @@ function Login() {
           className="text-white bg-slate-600"
           name="email"
           type="email"
-          ref={email}
+          inputRef={email}
           placeholder="Enter email"
         />
         <TextField
           className="text-white bg-slate-600"
           name="password"
           type="password"
-          ref={password}
+          inputRef={password}
           placeholder="Enter password"
         />
         <Typography component={"p"} className="text-red-500">
