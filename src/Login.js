@@ -7,9 +7,9 @@ import {
 } from "firebase/auth";
 import { auth } from "./utils/firebase";
 import { checkValidation } from "./utils/validation";
-import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addUser } from "./store/userSlice";
+import { POSTER } from "./utils/constants";
 
 function Login() {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -17,7 +17,6 @@ function Login() {
   const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const toggleSignIn = () => {
@@ -44,7 +43,6 @@ function Login() {
           // Signed in
           const user = userCredential.user;
           dispatch(addUser(user.uid, user.email));
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -60,7 +58,6 @@ function Login() {
         .then((userCredential) => {
           const user = userCredential.user;
           dispatch(addUser(user.uid, user.email));
-          navigate("/browse");
         })
         .catch((error) => {
           const errorCode = error.code;
@@ -75,11 +72,7 @@ function Login() {
         <Header />
       </Box>
       <Box className="absolute h-full w-full">
-        <img
-          className="h-full w-full"
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/855ed6e2-d9f1-4afd-90da-96023ec747c3/85eb5b91-25ed-4965-ace9-ba8e4a0ead8d/IN-en-20230828-popsignuptwoweeks-perspective_alpha_website_large.jpg"
-          alt="poster"
-        />
+        <img className="h-full w-full" src={POSTER} alt="poster" />
       </Box>
       <Box
         onSubmit={(e) => e.preventDefault()}
