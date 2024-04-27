@@ -5,11 +5,11 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
 } from "firebase/auth";
-import { auth } from "./utils/firebase";
-import { checkValidation } from "./utils/validation";
+import { auth } from "../utils/firebase";
+import { checkValidation } from "../utils/validation";
 import { useDispatch } from "react-redux";
-import { addUser } from "./store/userSlice";
-import { POSTER } from "./utils/constants";
+import { addUser } from "../store/userSlice";
+import { POSTER } from "../utils/constants";
 
 function Login() {
   const [isSignIn, setIsSignIn] = useState(true);

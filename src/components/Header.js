@@ -1,11 +1,11 @@
 import { Box, Button } from "@mui/material";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import React, { useEffect } from "react";
-import { auth } from "./utils/firebase";
-import { addUser, removeUser } from "./store/userSlice";
+import { auth } from "../utils/firebase";
+import { addUser, removeUser } from "../store/userSlice";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { LOGO, USER_AVATAR } from "./utils/constants";
+import { LOGO, USER_AVATAR } from "../utils/constants";
 
 const Header = () => {
   const dispatch = useDispatch();
