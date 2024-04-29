@@ -1,20 +1,33 @@
-import React  from "react";
+import React from "react";
 import Header from "./Header";
 import MainContainer from "./MainContainer";
 import SecondaryContainer from "./SecondaryContainer";
 import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
+import usePopularMovies from "../hooks/usePopularMovies";
+import useTopRatedMovies from "../hooks/useTopRatedMovies";
+import useUpcomingMovies from "../hooks/useUpcomingMovies";
+import { useSelector } from "react-redux";
+import GptSearch from "./GptSearch";
 
 const Browse = () => {
-  useNowPlayingMovies()
+  useNowPlayingMovies();
+  usePopularMovies();
+  useTopRatedMovies();
+  useUpcomingMovies();
+
+  const showGptView = useSelector((state) => state.gpt.showGptView);
 
   return (
     <>
       <Header />
-      {/* <div className="absolute h-full w-full">
-        <img className="h-full w-full" src={POSTER} alt="poster" />
-      </div> */}
-      <MainContainer/>
-      <SecondaryContainer/>
+      {showGptView ? (
+        <GptSearch />
+      ) : (
+        <>
+          <MainContainer />
+          <SecondaryContainer />
+        </>
+      )}
     </>
   );
 };
