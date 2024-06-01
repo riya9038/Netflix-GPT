@@ -1,5 +1,6 @@
 import React from "react";
 import MovieCard from "./MovieCard";
+import { useFetcher } from "react-router-dom";
 
 function MovieList({ title, movies }) {
   return (
